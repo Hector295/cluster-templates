@@ -1,13 +1,16 @@
-{{- $useFS := .Values.storage.ceph.csiFS.enabled | default false }}
-{{- $useRbd := .Values.storage.ceph.csiRBD.enabled | default false }}
-{{- define "ceph.chartName"}}
-{{- if $useFS }}
+{{- define "ceph.chartName" }}
+{{- if .Values.storage.ceph.csiFS.enabled }}
 ceph-fs
-{{- else if $useRbd }}
+{{- else if .Values.storage.ceph.csiRBD.enabled }}
 ceph-rbd
 {{- end }}
 {{- end }}
-{{ if .Values.storage.ceph.enabled }}
+
+{{- if .Values.storage.ceph.enabled }}
+
+{{- $useFS := .Values.storage.ceph.csiFS.enabled }}
+{{- $useRbd := .Values.storage.ceph.csiRBD.enabled }}
+
 apiVersion: addons.cluster.x-k8s.io/v1alpha1
 kind: HelmChartProxy
 metadata:
