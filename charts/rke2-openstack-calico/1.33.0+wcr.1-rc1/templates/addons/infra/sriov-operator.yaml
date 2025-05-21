@@ -1,0 +1,60 @@
+{{ if .Values.sriovOperator.enabled }}
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-sriov-crd-helm
+spec:
+  chartName: sriov-crd
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: cattle-sriov-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-sriov-operator-helm
+spec:
+  chartName: sriov-network-operator
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: cattle-sriov-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+  valuesTemplate: |
+    operator:
+      resourcePrefix: "whitestack.com"
+    sriovOperatorConfig:
+      deploy: true
+      configDaemonNodeSelector: { }
+      logLevel: 2
+      disableDrain: false
+      configurationMode: daemon
+    {{- if and (hasKey .Values.sriovOperator "customValues") (not (empty .Values.sriovOperator.customValues)) }}
+    {{- toYaml .Values.sriovOperator.customValues }}
+    {{- end }}
+---
+{{- end }}

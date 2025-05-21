@@ -1,0 +1,40 @@
+{{ if .Values.storage.longhorn.enabled }}
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-longhorn-helm
+spec:
+  chartName: longhorn
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: longhorn-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+  valuesTemplate: |
+    {{- if and (hasKey .Values.storage "longhorn") (hasKey .Values.storage.longhorn "customValues") (not (empty .Values.storage.longhorn.customValues)) }}
+    {{- toYaml .Values.storage.longhorn.customValues }}
+    {{- else }}
+    persistence:
+      defaultClass: false
+    defaultSettings:
+      replicaSoftAntiAffinity: false
+      autoDeletePodWhenVolumeDetachedUnexpectedly: true
+      allowVolumeCreationWithDegradedAvailability: false
+      replicaAutoBalance: least-effort
+      storageMinimalAvailablePercentage: 25
+      storageOverProvisioningPercentage: 200
+      defaultDataPath: /var/lib/longhorn/
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+    {{- end }}
+{{- end }}1008.90 do 6544.35 so

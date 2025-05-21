@@ -67,6 +67,11 @@ spec:
           - hostPath:
               path: "/etc/rancher/rke2/rke2.yaml"
             name: kubeconfig
+    - path: /var/lib/rancher/rke2/server/manifests/rke2-calico-config.yaml
+      owner: root:root
+      permissions: "0644"
+      content: |
+      {{ include "calico.values" . | indent 2 }}
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
@@ -74,6 +79,11 @@ spec:
       name: {{ .Values.cluster.name }}-control-plane
       namespace: fleet-default
     nodeDrainTimeout: 2m
+  postRKE2Commands:
+    - cp -r /var/lib/rancher/rke2/bin/* /usr/bin/
+    - mkdir -p ~/.kube
+    - cp /etc/rancher/rke2/rke2.yaml ~/.kube/config
+    - chmod 600 ~/.kube/config
   # Esta configuración se aplica a todos los nodos del plano de control
   agentConfig:
     # NodeLabels son etiquetas con las que se registrará el kubelet
@@ -170,6 +180,8 @@ spec:
         - {{ . }}
       {{- end }}
     disableComponents:
+      pluginComponents:
+        - "rke2-ingress-nginx"
       # Componentes de Kubernetes que se desactivarán
       kubernetesComponents:
         - "cloudController"

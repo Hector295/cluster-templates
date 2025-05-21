@@ -26,10 +26,6 @@ cluster:
       extraArgs: [] # extra args para el kubelet de todos los nodos del cluster. https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/
   labels: {} # labels para todos los nodos del cluster
   annotations: {} # annotations para todos los nodos del cluster
-  additionalManifests: |-
-    --- manifest-content
-  rke2Config:
-    agentEnvVars: {}
 
 # ===============
 # Configuración global de OpenStack
@@ -108,6 +104,7 @@ cniConfig:
   tunnelProtocol: "IPIP"
   masquerade: true
   bgp: false
+  multusEnabled: false
   # Configures general installation parameters for Calico. Schema is based
   # on the operator.tigera.io/Installation API documented
   # here: https://docs.tigera.io/calico/latest/reference/installation/api#operator.tigera.io/v1.InstallationSpec
@@ -116,97 +113,45 @@ cniConfig:
 
 storage:
   longhorn:
-    enabled: true
-    defaultValues:
-      persistence:
-        defaultClass: false
-      defaultSettings:
-        replicaSoftAntiAffinity: false
-        autoDeletePodWhenVolumeDetachedUnexpectedly: true
-        allowVolumeCreationWithDegradedAvailability: false
-        replicaAutoBalance: least-effort
-        storageMinimalAvailablePercentage: 25
-        storageOverProvisioningPercentage: 200
-        defaultDataPath: /var/lib/longhorn/
-        nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
-    customValues: |
-      <values_yaml_format>
+    enabled: false
+    customValues: {}
   openebs: # https://github.com/openebs/charts/blob/main/charts/openebs/values.yaml
     enabled: true
-    defaultValues: # valores por defecto del chart
-      apiserver:
-        enabled: false
-      localprovisioner:
-        replicas: 2
-      ndm:
-        enabled: false
-      ndmOperator:
-        enabled: false
-      analytics:
-        enabled: false
-      webhook:
-        enabled: false
-      snapshotOperator:
-        enabled: false
-      policies:
-        monitoring:
-          enabled: false
-      provisioner:
-        enabled: false
-    customValues: | # estos valores hace overwrite sobre los values por defecto
-      <values_yaml_format>
+    customValues: {}
   cinder:
-    enabled: true
-    defaultValues:
-      authUrl: "https://whitecloud.tcloud.com:5000"
-      username: "admin"
-      password: "F2045uJOeDEH16jYxUrmlBDVSQKP2G2reXMFIeK6"
-      region: "RegionOne"
-      tenantID: "c2fced11479946d7b8f31b18b8e7e37f"
-      tenantName: "TELCO_TOOLS"
-      domainName: "Default"
-      domainID: "default"
-      caCert: |
-        <ca-cert_content>
-    customValues: |
-      <values_yaml_format>
+    enabled: false
+    customValues: {}
   ceph:
-    enabled: true
-    defaultValues:
-      clusterID: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
-      monitorList: [ ]
-      # monitorList:
-      #  - "1.2.3.4:6789"
-      #  - "1.2.3.5:6789"
-      pool: "volumes"
-      userID: "admin"
-      userKey: "AAAAAAAAAAAAAAAAAA/BBBBBBBBBBBBBBBBBBB=="
-      provisionerReplicaCount: 3
-      reclaimPolicy: "Retain"
-      csiRBD:
-        enabled: false
-      csiFS:
-        enabled: false
-        fsName: "whitemist-fs"
-    customValues: |
-      <values_yaml_format>
-
+    enabled: false
+    clusterID: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
+    monitorList: [ ]
+    # monitorList:
+    #  - "1.2.3.4:6789"
+    #  - "1.2.3.5:6789"
+    pool: "volumes"
+    userID: "admin"
+    userKey: "AAAAAAAAAAAAAAAAAA/BBBBBBBBBBBBBBBBBBB=="
+    provisionerReplicaCount: 3
+    reclaimPolicy: "Retain"
+    enabledHostNetwork: false
+    csiRBD:
+      enabled: false
+    csiFS:
+      enabled: false
+      fsName: ""
+    customValues: {}
 logging:
   enabled: true
   clusterOutputs:
     server:
       host: <changeme>
       port: 24224
-  customValues: |
-    <values>
+  customValues: {}
 metallb:
   enabled: true
-  defaultValues: { }
-  customValues: |
-    <values>
+  customValues: {}
 monitoring:
   enabled: false
-  version: 105.1.0+up61.3.2
   thanos:
     objectStorage:
       accessKey: <changeme>
@@ -215,79 +160,34 @@ monitoring:
       secretKey: <changeme>
   thanosIngress:
     host: <changeme>
+  customValues: {}
 ingressNginx:
   enabled: true
-  defaultValues: {}
-  customValues: |
-    <values>
+  customValues: {}
 kubevirt:
   enabled: true
-  emulation: true
-  customValues: |
-    <values>
+  customValues: {}
 sriovOperator:
   enabled: true
-  defaultValues:
-    operator:
-      resourcePrefix: "intel.com"
-    sriovOperatorConfig:
-      deploy: true
-      configDaemonNodeSelector: { }
-      logLevel: 2
-      disableDrain: false
-      configurationMode: daemon
-  customValues: |
-    <values>
+  customValues: {}
 nodeConfigOperator:
   enabled: true
-  defaultValues:
-    managerConfig:
-      aptEnabled: true
-      hostfsEnabled: true
-  customValues: |
-    <values>
+  managerConfig:
+    aptEnabled: true
+    hostfsEnabled: true
+  customValues:  {}
 nmstateOperator:
-  enabled: true
-  defaultValues: {}
-  customValues: |
-    <values>
+  enabled: false
+#  customValues: {}
 sdnController:
   enabled: true
-  defaultValues: { }
-  customValues: |
-    <values>
+  customValues: { }
 ntp:
   enabled: true
-  defaultValues: { }
-  customValues: |
-    <values>
+  customValues: { }
 x509CertExporter:
   enabled: true
-  defaultValues:
-    image:
-      pullPolicy: IfNotPresent
-    psp:
-      create: false
-    rbac:
-      create: true
-    podExtraLabels: [ ]
-    hostPathsExporter:
-      podAnnotations: [ ]
-      watchDirectories: [ ]
-      watchFiles: [ ]
-      watchKubeconfFiles: [ ]
-      daemonSets:
-        cp:
-          nodeSelector:
-            node-role.kubernetes.io/control-plane: ""
-          tolerations:
-            - effect: NoSchedule
-              key: node-role.kubernetes.io/control-plane
-              operator: Exists
-    rbacProxy:
-      enabled: false
-  customValues: |
-    <values>
+  customValues: { }
 
 registries:
   enabled: false

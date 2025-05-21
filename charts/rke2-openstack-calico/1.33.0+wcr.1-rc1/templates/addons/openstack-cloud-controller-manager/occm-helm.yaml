@@ -16,6 +16,9 @@ spec:
   namespace: kube-system
   repoURL: https://kubernetes.github.io/cloud-provider-openstack
   valuesTemplate: |
+    enabledControllers:
+    - cloud-node
+    - cloud-node-lifecycle
     nodeSelector:
     secret:
       enabled: true

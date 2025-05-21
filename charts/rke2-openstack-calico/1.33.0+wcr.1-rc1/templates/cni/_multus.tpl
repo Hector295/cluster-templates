@@ -1,0 +1,11 @@
+{{- define "multus.values" -}}
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+   name: rke2-multus
+   namespace: kube-system
+spec:
+  valuesContent: |-
+    rke2-whereabouts:
+      enabled: true
+{{- end }}
