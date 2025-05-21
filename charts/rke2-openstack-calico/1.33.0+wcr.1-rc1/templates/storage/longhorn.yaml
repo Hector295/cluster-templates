@@ -37,4 +37,4 @@ spec:
       defaultDataPath: /var/lib/longhorn/
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
     {{- end }}
-{{- end }}1008.90 do 6544.35 so
+{{- end }}
