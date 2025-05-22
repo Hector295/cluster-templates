@@ -9,11 +9,6 @@ metadata:
   # Etiquetas opcionales para organizar recursos
   labels:
   {{- include "rke2-openstack-calico.labels" $ | nindent 4 }}
-    {{- if $worker.labels }}
-    {{ toYaml $worker.labels | nindent 4 }}
-    {{- else }}
-    {{ toYaml $.Values.workerNodes.defaults.labels | nindent 4 }}
-    {{- end }}
 spec:
   # Nombre del clúster al que pertenece este MachineDeployment
   clusterName: {{ $.Values.cluster.name }}
