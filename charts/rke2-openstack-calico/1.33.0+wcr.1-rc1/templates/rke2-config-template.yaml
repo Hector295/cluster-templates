@@ -37,6 +37,7 @@ spec:
         # Configuración de Kubelet
         kubelet:
           extraArgs:
+          - 'feature-gates=InPlacePodVerticalScaling=true'
           - {{ "provider-id=openstack:///{{ ds.meta_data.uuid }}" }}
           {{- with $.Values.cluster.kubeComponents.kubelet.extraArgs }}
           - {{ . }}
@@ -44,6 +45,7 @@ spec:
         # KubeProxy contiene configuración personalizada para el proceso de kube-proxy
         kubeProxy:
           extraArgs:
+            - 'feature-gates=InPlacePodVerticalScaling=true'
           {{- with $.Values.cluster.kubeComponents.kubeProxy.extraArgs }}
             - {{ . }}
           {{- end }}
