@@ -120,6 +120,7 @@ spec:
     # Kubelet contiene configuración personalizada para el proceso de kubelet
     kubelet:
       extraArgs:
+      - 'feature-gates=InPlacePodVerticalScaling=true'
       - {{ "provider-id=openstack:///{{ ds.meta_data.uuid }}" }}
       {{- with $.Values.cluster.kubeComponents.kubelet.extraArgs }}
       - {{ . }}
@@ -127,6 +128,7 @@ spec:
     # KubeProxy contiene configuración personalizada para el proceso de kube-proxy
     kubeProxy:
       extraArgs:
+        - 'feature-gates=InPlacePodVerticalScaling=true'
       {{- with $.Values.cluster.kubeComponents.kubeProxy.extraArgs }}
         - {{ . }}
       {{- end }}
@@ -172,12 +174,14 @@ spec:
     # KubeAPIServer define la configuración personalizada opcional del Kube API Server
     kubeAPIServer:
       extraArgs:
+        - 'feature-gates=InPlacePodVerticalScaling=true'
       {{- with $.Values.cluster.kubeComponents.kubeApiServer.extraArgs }}
         - {{ . }}
       {{- end }}
     # KubeControllerManager define la configuración personalizada opcional del Kube Controller Manager
     kubeControllerManager:
       extraArgs:
+        - 'feature-gates=InPlacePodVerticalScaling=true'
       {{- with $.Values.cluster.kubeComponents.kubeControllerManager.extraArgs }}
         - {{ . }}
       {{- end }}
@@ -185,6 +189,7 @@ spec:
     # KubeScheduler define la configuración personalizada opcional del Kube Scheduler
     kubeScheduler:
       extraArgs:
+        - 'feature-gates=InPlacePodVerticalScaling=true'
       {{- with $.Values.cluster.kubeComponents.kubeShceduler.extraArgs }}
         - {{ . }}
       {{- end }}
