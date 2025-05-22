@@ -1,0 +1,30 @@
+{{ if .Values.sdnController.enabled }}
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-sdn-controller-helm
+spec:
+  chartName: whitesdn-controller
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: whitesdn
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+  valuesTemplate: |
+    {{- if and (hasKey .Values.sdnController "customValues") (not (empty .Values.sdnController.customValues)) }}
+    {{- toYaml .Values.sdnController.customValues }}
+    {{- end }}
+    whitesdnSecrets:
+      password: {{ .Values.sdnController.whitesdnSecrets.password }}
+{{- end }}

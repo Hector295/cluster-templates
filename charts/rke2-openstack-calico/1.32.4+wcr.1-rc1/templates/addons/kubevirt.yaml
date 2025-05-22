@@ -1,0 +1,79 @@
+{{ if .Values.kubevirt.enabled }}
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-kubevirt-cdi-helm
+spec:
+  chartName: cdi
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: kubevirt
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-kubevirt-helm
+spec:
+  chartName: kubevirt
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: kubevirt
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+  valuesTemplate: |
+    kubevirt:
+      configuration:
+        developerConfiguration:
+          useEmulation: true
+    {{- if (not (empty .Values.kubevirt.customValues)) }}
+    {{- toYaml .Values.kubevirt.customValues }}
+    {{- end }}
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-kubevirt-dashboard-helm
+spec:
+  chartName: kubevirt-dashboard-extension
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: cattle-ui-plugin-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+---
+{{- end }}

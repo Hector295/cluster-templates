@@ -1,0 +1,107 @@
+{{- define "ceph.chartName" }}
+{{- if .Values.storage.ceph.csiFS.enabled }}
+ceph-fs
+{{- else if .Values.storage.ceph.csiRBD.enabled }}
+ceph-rbd
+{{- end }}
+{{- end }}
+
+{{- if .Values.storage.ceph.enabled }}
+
+{{- $useFS := .Values.storage.ceph.csiFS.enabled }}
+{{- $useRbd := .Values.storage.ceph.csiRBD.enabled }}
+
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-{{ include "ceph.chartName" . }}-helm
+spec:
+  chartName: {{ include "ceph.chartName" }}
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: ceph-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+  valuesTemplate: |
+    {{- if and (hasKey .Values.storage "ceph") (hasKey .Values.storage.ceph "customValues") (not (empty .Values.storage.ceph.customValues)) }}
+    {{- toYaml .Values.storage.ceph.customValues }}
+    {{- else }}
+    csiConfig:
+    - clusterID: {{ .Values.storage.ceph.clusterID }}
+      monitors:
+      {{- range .Values.storage.ceph.monitorList }}
+      - {{ . }}
+      {{- end }}
+      {{- if $useRbd }}
+      readAffinity:
+        enabled: true
+        crushLocationLabels:
+          - topology.kubernetes.io/region
+          - topology.kubernetes.io/zone
+      {{- end }}
+    storageClass:
+      create: true
+      name: default-{{ include "ceph.chartName" . }}-sg
+      clusterID: {{ .Values.storage.ceph.clusterID }}
+      pool: {{ .Values.storage.ceph.pool }}
+      reclaimPolicy: {{ .Values.storage.ceph.reclaimPolicy }}
+      {{- if $useFS }}
+      mounter: "fuse"
+      fsName: {{ .Values.storage.ceph.csiFS.fsName }}
+      {{- else if $useRbd }}
+      encrypted: false
+      {{- end }}
+    secret:
+      create: true
+      {{- if $useFS }}
+      adminID: {{ .Values.storage.ceph.userID }}
+      adminKey: {{ .Values.storage.ceph.userKey }}
+      {{- else if $useRbd }}
+      userID: {{ .Values.storage.ceph.userID }}
+      userKey: {{ .Values.storage.ceph.userKey }}
+      {{- end }}
+    readAffinity:
+      enabled: true
+    provisioner:
+      replicaCount: {{ .Values.storage.ceph.provisionerReplicaCount }}
+      enableHostNetwork: {{ .Values.storage.ceph.enabledHostNetwork }}
+      {{- if $useFS }}
+      httpMetrics:
+        enabled: true
+        containerPort: 8081
+        service:
+          enabled: true
+          servicePort: 8080
+          type: ClusterIP
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "9080"
+      {{- end }}
+    {{- if $useFS }}
+    nodeplugin:
+      httpMetrics:
+        enabled: true
+        containerPort: 8081
+        service:
+          enabled: true
+          servicePort: 8080
+          type: ClusterIP
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "9080"
+    {{- end }}
+    logLevel: 5
+    sidecarLogLevel: 1
+    {{- end }}
+{{- end }}

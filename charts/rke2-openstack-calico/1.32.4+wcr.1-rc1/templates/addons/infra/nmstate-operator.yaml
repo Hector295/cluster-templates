@@ -1,0 +1,28 @@
+{{ if .Values.nmstateOperator.enabled }}
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-nmstate-helm
+spec:
+  chartName: metallb
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: metallb-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+{{- if ne .Values.metallb.customValues "" }}
+  valuesTemplate: |
+  {{ toYaml .Values.metallb.customValues |indent 4 }}
+{{- end }}
+{{- end }}
