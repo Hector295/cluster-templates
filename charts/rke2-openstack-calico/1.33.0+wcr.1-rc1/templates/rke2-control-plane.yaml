@@ -71,7 +71,7 @@ spec:
       owner: root:root
       permissions: "0644"
       content: |
-      {{ include "calico.values" . | indent 2 }}
+{{ include "calico.values" . | indent 8 }}
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
