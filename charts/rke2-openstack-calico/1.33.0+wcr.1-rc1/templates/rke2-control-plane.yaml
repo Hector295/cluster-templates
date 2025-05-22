@@ -99,7 +99,7 @@ spec:
     {{- end }}
     # NodeTaints son taints con los que se registrará el kubelet
     nodeTaints:
-    {{- range $index, $tain := .Values.controlPlaneNodes.taints }}
+    {{ range $index, $tain := .Values.controlPlaneNodes.taints }}
       - "{{ $tain.key }}={{ $tain.value }}:{{ $tain.effect }}"
     {{- end }}
 
