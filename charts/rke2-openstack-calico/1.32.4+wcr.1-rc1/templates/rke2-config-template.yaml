@@ -18,9 +18,9 @@ spec:
 
         # Etiquetas para los nodos Kubernetes
 {{/*        nodeLabels:*/}}
-{{/*          - "node.kubernetes.io/worker=true"*/}}
-{{/*          - "node.kubernetes.io/instance-type=large"*/}}
-{{/*          - "workload-type=memory-intensive"*/}}
+{{/*        {{- range .Values.workerNodes.defaults.labels }}*/}}
+{{/*          - {{ . }}*/}}
+{{/*        {{- end }}*/}}
 
 {{/*        # Anotaciones para los nodos Kubernetes*/}}
 {{/*        nodeAnnotations:*/}}

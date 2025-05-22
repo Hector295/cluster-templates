@@ -94,10 +94,10 @@ spec:
   # Esta configuración se aplica a todos los nodos del plano de control
   agentConfig:
     # NodeLabels son etiquetas con las que se registrará el kubelet
-    nodeLabels:
-    {{- range .Values.controlPlaneNodes.labels }}
-    - {{ . }}
-    {{- end }}
+{{/*    nodeLabels:*/}}
+{{/*    {{- range .Values.controlPlaneNodes.labels }}*/}}
+{{/*      - {{ . }}*/}}
+{{/*    {{- end }}*/}}
 
     # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
     nodeAnnotations:

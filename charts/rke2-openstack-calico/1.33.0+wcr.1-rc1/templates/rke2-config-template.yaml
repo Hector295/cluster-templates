@@ -17,10 +17,10 @@ spec:
         format: "cloud-config"
 
         # Etiquetas para los nodos Kubernetes
-        nodeLabels:
-        {{- range .Values.workerNodes.defaults.labels }}
-          - {{ . }}
-        {{- end }}
+{{/*        nodeLabels:*/}}
+{{/*        {{- range .Values.workerNodes.defaults.labels }}*/}}
+{{/*          - {{ . }}*/}}
+{{/*        {{- end }}*/}}
 
 {{/*        # Anotaciones para los nodos Kubernetes*/}}
 {{/*        nodeAnnotations:*/}}
