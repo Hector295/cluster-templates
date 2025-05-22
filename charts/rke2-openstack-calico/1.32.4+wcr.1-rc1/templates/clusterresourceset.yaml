@@ -5,7 +5,7 @@ metadata:
 spec:
   clusterSelector:
     matchLabels:
-    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+    {{- include "rke2-openstack-calico.selectorLabels" . | nindent 6 }}
   resources:
   - kind: Secret
     name: {{ include "rke2-openstack-calico.name" . }}-cloud-config-secret

@@ -96,7 +96,7 @@ spec:
     # NodeLabels son etiquetas con las que se registrará el kubelet
     nodeLabels:
     {{- if .Values.controlPlaneNodes.labels }}
-      - {{ toYaml .Values.controlPlaneNodes.labels | nindent 4 }}
+    {{ toYaml .Values.controlPlaneNodes.labels | nindent 6 }}
     {{- end }}
 
     # NodeAnnotations son anotaciones que se crean en los nodos después de la fase de bootstrap
