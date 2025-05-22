@@ -72,6 +72,13 @@ spec:
       permissions: "0644"
       content: |
 {{ include "calico.values" . | indent 8 }}
+    {{- if or (include "multus.enabled.bysriov" . | trim ) .Values.cniConfig.multusEnabled }}
+    - path: /var/lib/rancher/rke2/server/manifests/rke2-multus-config.yaml
+      owner: root:root
+      permissions: "0644"
+      content: |
+{{ include "multus.values" . | indent 8 }}
+    {{- end }}
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1

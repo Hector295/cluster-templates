@@ -25,4 +25,6 @@ spec:
     {{- if and (hasKey .Values.sdnController "customValues") (not (empty .Values.sdnController.customValues)) }}
     {{- toYaml .Values.sdnController.customValues }}
     {{- end }}
+    whitesdnSecrets:
+      password: {{ .Values.sdnController.whitesdnSecrets.password }}
 {{- end }}

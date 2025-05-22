@@ -181,6 +181,8 @@ nmstateOperator:
 #  customValues: {}
 sdnController:
   enabled: true
+  whitesdnSecrets:
+    password: "kcatsetiw"
   customValues: { }
 ntp:
   enabled: true

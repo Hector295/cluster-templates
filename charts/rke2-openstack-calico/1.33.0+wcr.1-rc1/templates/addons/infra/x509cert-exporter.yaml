@@ -28,9 +28,9 @@ spec:
       create: false
     rbac:
       create: true
-    podExtraLabels: [ ]
+    podExtraLabels: { }
     hostPathsExporter:
-      podAnnotations: [ ]
+      podAnnotations: { }
       watchDirectories: [ ]
       watchFiles: [ ]
       watchKubeconfFiles: [ ]

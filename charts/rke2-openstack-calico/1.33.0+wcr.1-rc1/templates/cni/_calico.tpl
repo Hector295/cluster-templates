@@ -1,4 +1,4 @@
-{{- define "calico.values" }}
+{{- define "calico.values" -}}
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
