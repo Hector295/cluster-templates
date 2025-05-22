@@ -64,7 +64,7 @@ controlPlaneNodes:
       value: true
       effect: NoSchedule
   labels:
-    node-role.kubernetes.io/control-plane: "true"
+    - "node-role.kubernetes.io/control-plane=true"
   annotations: {}
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS
@@ -81,7 +81,7 @@ workerNodes:
       - key: node-role.kubernetes.io/worker
         effect: NoSchedule
     labels:
-      node-role.kubernetes.io/worker: ""
+      - "node-role.kubernetes.io/worker=true"
     flavorName: m1.large
     imageName: Ubuntu 22.04 LTS
     quantity: 2
@@ -95,7 +95,8 @@ workerNodes:
       quantity: 2
       flavorName: m1.large
       labels:
-        node-role.kubernetes.io/worker: "true"
+        - "node-role.kubernetes.io/worker=true"
+        - "node-role.kubernetes.io/worker-diff=true"
 
 cniConfig:
   podCIDR: "10.42.0.0/16"
