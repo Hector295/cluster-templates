@@ -101,7 +101,7 @@ cniConfig:
   podCIDR: "10.42.0.0/16"
   serviceCIDR: "10.42.0.0/16"
   mtu: 1440
-  tunnelProtocol: "IPIP"
+  tunnelProtocol: "VXLAN"
   masquerade: true
   bgp: false
   multusEnabled: false
