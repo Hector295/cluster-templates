@@ -59,7 +59,7 @@ spec:
         - name: query
           value:
             type: String
-            string: "[\"=\", \"$hypervisor_hostname\", \"{{ .Values.controlPlaneNodes.hypervisorHostname }}\"]"
+            string: '["s==","$host","{{ .Values.controlPlaneNodes.hypervisorHostname }}"]'
       {{- end }}
 
       {{- $rootVolume := .Values.controlPlaneNodes.rootVolume }}
