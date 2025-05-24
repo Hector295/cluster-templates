@@ -56,7 +56,7 @@ spec:
       configDrive: true
       {{- if ne .Values.controlPlaneNodes.hypervisorHostname "" }}
       schedulerHintAdditionalProperties:
-        - name: "host"
+        - name: "force_hosts"
           value:
             type: "String"
             string: {{ .Values.controlPlaneNodes.hypervisorHostname }}

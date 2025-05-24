@@ -69,7 +69,7 @@ spec:
       configDrive: true
       {{- if or (ne $.Values.workerNodes.defaults.hypervisorHostname "") (and (hasKey $worker "hypervisorHostname") (ne $worker.hypervisorHostname "")) }}
       schedulerHintAdditionalProperties:
-        - name: "host"
+        - name: "force_hosts"
           value:
             type: "String"
             string: {{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}
