@@ -1,9 +1,6 @@
 cluster:
-  apiServerVIP: "10.100.16.181"
+  apiServerVIP: "10.101.15.245"
   name: "prod-cluster" # nombre del cluster
-  prefixNode: "ws"
-  cloudCredentialSecretName: ""
-  kubernetesVersion: v1.33.0+rke2r1 # version de kubernetes a usar
   etcd:
     exposeMetrics: false # ExposeMetrics define la política para la exposición de métricas ETCD
     backup:
@@ -31,23 +28,21 @@ cluster:
 # Configuración global de OpenStack
 # ===============
 infraConfig:
-  authUrl: http://10.100.1.22:5000/v3
+  authUrl: https://whitecloud.intra.whitestack.com:5000/v3
   availabilityZones:
-    - nova
+    - HAL1
   domainName: Default
   keypairName: Hector
-  internalNetwork:
-    netName: PUBLIC
-    subnetName: VPN
-  externalNetwork:
-    netName: PUBLIC
   region: RegionOne
   sshUser: ubuntu
-  tenantName: hventura
+  tenantName: team-products
   username: hventura
+  principalNetwork:
+    netName: intra-net-products
+    subnetName: net-products
   password:
     secret:
-      name: passocp2
+      name: passopenstack
       namespace: default
   caCerts:
     configMap:
@@ -58,7 +53,7 @@ infraConfig:
 # Nodos Control Plane
 # ===============
 controlPlaneNodes:
-  quantity: 3
+  quantity: 1
   taints: #"dedicated=large-workloads:NoSchedule"
     - key: node-role.kubernetes.io/control-plane
       value: true
@@ -68,14 +63,21 @@ controlPlaneNodes:
   annotations: {}
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS
+  rootVolume:
+    sizeGiB: 40
+    availabilityZone: nova
   securityGroups:
     - all
-  name: cp-node-01
+  hypervisorHostname: "hal1"
+  additionalPorts:
+    - netName: red_whitecruiser_hector
+      subnetName: subred_whitecruiser_hector
 
 # ===============
 # Nodos Worker
 # ===============
 workerNodes:
+  imageName: Ubuntu 22.04 LTS
   defaults:
     taints:
       - key: node-role.kubernetes.io/worker
@@ -83,20 +85,35 @@ workerNodes:
     labels:
       - "node-role.kubernetes.io/worker=true"
     flavorName: m1.large
-    imageName: Ubuntu 22.04 LTS
     quantity: 2
+    hypervisorHostname: "hal1"
     securityGroups:
       - default
       - all
-
+    additionalPorts:
+      - netName: red_whitecruiser_hector
+        subnetName: subred_whitecruiser_hector
+    rootVolume:
+      sizeGiB: 50
+      availabilityZone: nova
   nodes:
-    - name: worker-node
-      hostname: worker-node
-      quantity: 2
+    - name: worker-node-large
+      quantity: 1
       flavorName: m1.large
+      hypervisorHostname: "hal2"
       labels:
         - "node-role.kubernetes.io/worker=true"
         - "node-role.kubernetes.io/worker-diff=true"
+      rootVolume:
+        sizeGiB: 60
+        availabilityZone: nova
+
+    - name: worker-node-medium
+      additionalPorts:
+        - netName: red_whitecruiser_hector
+          subnetName: subred_whitecruiser_hector
+        - netName: red_whitecruiser_ventura
+          subnetName: subred_whitecruiser_ventura
 
 cniConfig:
   podCIDR: "10.42.0.0/16"

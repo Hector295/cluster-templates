@@ -20,9 +20,18 @@ spec:
       ports:
         - network:
             filter:
-              name: {{ $.Values.infraConfig.internalNetwork.netName }}
+              name: {{ .Values.infraConfig.principalNetwork.netName }}
           allowedAddressPairs:
           - ipAddress: {{ .Values.cluster.apiServerVIP }}
+        {{- range .Values.controlPlaneNodes.additionalPorts }}
+        - network:
+            filter:
+              name: {{ .netName }}
+          fixedIPs:
+            - subnet:
+                filter:
+                  name: {{ .subnetName }}
+        {{- end }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ .Values.infraConfig.keypairName }}
 
@@ -36,8 +45,8 @@ spec:
       {{- end }}
 
       serverMetadata:
-        - key: hostname
-          value: {{ .Values.controlPlaneNodes.name }}
+        - key: cluster
+          value: {{ .Values.cluster.name }}
       # Etiquetas para los recursos de OpenStack
       tags:
       - {{ .Values.cluster.name }}
@@ -45,19 +54,23 @@ spec:
 
       # Habilitar Config Drive para metadatos - opcional
       configDrive: true
+      {{- if ne .Values.controlPlaneNodes.hypervisorHostname "" }}
+      schedulerHintAdditionalProperties:
+        - name: query
+          value:
+            type: String
+            string: "[\"=\", \"$hypervisor_hostname\", \"{{ .Values.controlPlaneNodes.hypervisorHostname }}\"]"
+      {{- end }}
 
-{{/*      # Configuración del volumen raíz - opcional*/}}
-{{/*      # Si se especifica, la instancia arrancará desde un volumen*/}}
-{{/*      rootVolume:*/}}
-{{/*        # Tamaño del volumen en GiB*/}}
-{{/*        sizeGiB: 40*/}}
-{{/*        # Tipo de volumen en Cinder*/}}
-{{/*        type: ssd*/}}
-{{/*        # Zona de disponibilidad para el volumen*/}}
-{{/*        availabilityZone:*/}}
-{{/*          # Se puede obtener de un nombre específico o de la máquina*/}}
-{{/*          from: Name*/}}
-{{/*          name: nova*/}}
+      {{- if and (hasKey .Values.controlPlaneNodes "rootVolume") (ne .Values.controlPlaneNodes.rootVolume.sizeGiB "" ) }}
+      rootVolume:
+        # Tamaño del volumen en GiB
+        sizeGiB: {{ .Values.controlPlaneNodes.rootVolume.sizeGiB }}
+        {{- if and (hasKey .Values.controlPlaneNodes.rootVolume "availabilityZone") (ne .Values.controlPlaneNodes.rootVolume.availabilityZone "") }}
+        availabilityZone:
+          name: {{ .Values.controlPlaneNodes.rootVolume.availabilityZone }}
+        {{- end }}
+      {{- end }}
 
 {{/*      # Dispositivos de bloque adicionales - opcional*/}}
 {{/*      additionalBlockDevices:*/}}
@@ -77,10 +90,3 @@ spec:
 {{/*      serverGroup:*/}}
 {{/*        filter:*/}}
 {{/*          name: anti-affinity-group*/}}
-
-{{/*      # Propiedades adicionales para el scheduler de OpenStack */}}
-{{/*      schedulerHintAdditionalProperties:*/}}
-{{/*      - name: group*/}}
-{{/*        value:*/}}
-{{/*          type: String*/}}
-{{/*          string: control-plane-group*/}}

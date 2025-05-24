@@ -8,6 +8,7 @@ metadata:
   namespace: fleet-default
   # Etiquetas opcionales para organizar recursos
   labels:
+    whitestack.worker/node-group-name: "{{ $worker.name }}"
   {{- include "rke2-openstack-calico.labels" $ | nindent 4 }}
 spec:
   # Nombre del clúster al que pertenece este MachineDeployment
@@ -28,6 +29,7 @@ spec:
   selector:
     matchLabels:
       cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
+      whitestack.worker/node-group-name: {{ $worker.name }}
   # Plantilla para las máquinas que se crearán
   template:
     # Metadatos para las máquinas creadas
@@ -35,12 +37,13 @@ spec:
       labels:
         # Estas etiquetas deben coincidir con el selector anterior
         cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
+        whitestack.worker/node-group-name: {{ $worker.name }}
     # Especificación de la máquina
     spec:
       # Nombre del clúster (debe coincidir con clusterName arriba)
       clusterName: {{ $.Values.cluster.name }}
-      # Versión de Kubernetes para esta máquina (debe incluir +rke2r1 para RKE2)
-      version: {{ $.Values.cluster.kubernetesVersion }}
+      # Versión de Kubernetes
+      version: v1.33.0+rke2r1
       # Configuración de bootstrap - define cómo se inicializará el nodo
       bootstrap:
         # Referencia al template de configuración RKE2

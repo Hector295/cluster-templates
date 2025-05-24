@@ -7,6 +7,7 @@ metadata:
   labels:
     cluster.x-k8s.io/cluster-name: {{ $.Values.cluster.name }}
     cluster.x-k8s.io/role: worker
+    whitestack.worker/node-group-name: "{{ $worker.name }}"
   {{- include "rke2-openstack-calico.labels" $ | nindent 4 }}
 spec:
   template:
@@ -17,11 +18,29 @@ spec:
       flavor: {{ $worker.flavorName | default $.Values.workerNodes.defaults.flavorName }}
       image:
         filter:
-          name: {{ $.Values.workerNodes.defaults.imageName }}
+          name: {{ $.Values.workerNodes.imageName }}
       ports:
+        {{- if hasKey $worker "additionalPorts" }}
+        {{- range $worker.additionalPorts }}
         - network:
             filter:
-              name: {{ $.Values.infraConfig.internalNetwork.netName }}
+              name: {{ .netName }}
+          fixedIPs:
+            - subnet:
+                filter:
+                  name: {{ .subnetName }}
+        {{- end }}
+        {{- else }}
+        {{- range $.Values.workerNodes.defaults.additionalPorts }}
+        - network:
+            filter:
+              name: {{ .netName }}
+          fixedIPs:
+            - subnet:
+                filter:
+                  name: {{ .subnetName }}
+        {{- end }}
+        {{- end }}
       # Nombre de la clave SSH para acceder a la instancia
       sshKeyName: {{ $.Values.infraConfig.keypairName }}
 
@@ -34,6 +53,9 @@ spec:
         {{- end }}
       {{- end }}
 
+      serverMetadata:
+        - key: cluster
+          value: {{ .Values.cluster.name }}
       # Etiquetas para los recursos de OpenStack
       tags:
       - {{ $.Values.cluster.name }}
@@ -41,7 +63,21 @@ spec:
 
       # Habilitar Config Drive para metadatos - opcional
       configDrive: true
-
+      {{- if or (ne $.Values.workerNodes.defaults.hypervisorHostname "") (and (hasKey $worker "hypervisorHostname") (ne $worker.hypervisorHostname "")) }}
+      schedulerHintAdditionalProperties:
+        - name: query
+          value:
+            type: String
+            string: "[\"=\", \"$hypervisor_hostname\", \"{{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}\"]"
+      {{- end }}
+      {{- if or (and (hasKey $.Values.workerNodes.defaults "rootVolume") (ne $.Values.workerNodes.defaults.rootVolume.sizeGiB "" )) (and (hasKey $worker "rootVolume") (ne $worker.rootVolume.sizeGiB "" )) }}
+      rootVolume:
+        sizeGiB: {{ $worker.rootVolume.sizeGiB | default $.Values.workerNodes.defaults.rootVolume.sizeGiB }}
+        {{- if or (and (hasKey $.Values.workerNodes.defaults "availabilityZone") (ne $.Values.workerNodes.defaults.rootVolume.availabilityZone "" )) (and (hasKey $worker "availabilityZone") (ne $worker.rootVolume.availabilityZone "" )) }}
+        availabilityZone:
+          name:  {{ $worker.rootVolume.availabilityZone | default $.Values.controlPlaneNodes.rootVolume.availabilityZone }}
+        {{- end }}
+      {{- end }}
 {{/*      # Grupo de servidores para colocación - opcional*/}}
 {{/*      serverGroup:*/}}
 {{/*        filter:*/}}
