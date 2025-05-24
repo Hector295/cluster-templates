@@ -64,7 +64,7 @@ controlPlaneNodes:
   flavorName: m1.large
   imageName: Ubuntu 22.04 LTS
   rootVolume:
-    sizeGiB: 40
+    sizeGiB: "40"
     availabilityZone: nova
   securityGroups:
     - all
@@ -94,21 +94,21 @@ workerNodes:
       - netName: red_whitecruiser_hector
         subnetName: subred_whitecruiser_hector
     rootVolume:
-      sizeGiB: 50
+      sizeGiB: "50"
       availabilityZone: nova
   nodes:
-    - name: worker-node-large
+    - name: worker-node-sin-flavor
       quantity: 1
-      flavorName: m1.large
       hypervisorHostname: "hal2"
       labels:
         - "node-role.kubernetes.io/worker=true"
         - "node-role.kubernetes.io/worker-diff=true"
       rootVolume:
-        sizeGiB: 60
+        sizeGiB: "60"
         availabilityZone: nova
 
     - name: worker-node-medium
+      flavorName: m1.medium
       additionalPorts:
         - netName: red_whitecruiser_hector
           subnetName: subred_whitecruiser_hector
