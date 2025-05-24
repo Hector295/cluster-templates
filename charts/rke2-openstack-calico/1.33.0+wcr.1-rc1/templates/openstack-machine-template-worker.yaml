@@ -20,6 +20,9 @@ spec:
         filter:
           name: {{ $.Values.workerNodes.imageName }}
       ports:
+        - network:
+            filter:
+              name: {{ .Values.infraConfig.principalNetwork.netName }}
         {{- if hasKey $worker "additionalPorts" }}
         {{- range $worker.additionalPorts }}
         - network:
@@ -65,10 +68,10 @@ spec:
       configDrive: true
       {{- if or (ne $.Values.workerNodes.defaults.hypervisorHostname "") (and (hasKey $worker "hypervisorHostname") (ne $worker.hypervisorHostname "")) }}
       schedulerHintAdditionalProperties:
-        - name: "query"
+        - name: "host"
           value:
             type: "String"
-            string: "[\"=\", \"$hypervisor_hostname\", \"{{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}\"]"
+            string: {{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}
       {{- end }}
       {{- $rootVolumeSize := dig "rootVolume" "sizeGiB" "" $worker | default (dig "rootVolume" "sizeGiB" "" $.Values.workerNodes.defaults) }}
       {{- if $rootVolumeSize }}
