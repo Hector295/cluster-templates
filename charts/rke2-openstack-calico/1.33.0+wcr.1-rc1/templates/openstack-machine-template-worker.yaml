@@ -1,4 +1,5 @@
 {{- range $index, $worker := .Values.workerNodes.nodes }}
+---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
 metadata:
