@@ -67,7 +67,7 @@ controlPlaneNodes:
     sizeGiB: "40"
     availabilityZone: nova
   securityGroups:
-    - all
+    - whitecicd-whitemist-deployment_sg
   hypervisorHostname: "hal1"
   additionalPorts:
     - netName: red_whitecruiser_hector
@@ -88,8 +88,7 @@ workerNodes:
     quantity: 2
     hypervisorHostname: "hal1"
     securityGroups:
-      - default
-      - all
+      - whitecicd-whitemist-deployment_sg
     additionalPorts:
       - netName: red_whitecruiser_hector
         subnetName: subred_whitecruiser_hector

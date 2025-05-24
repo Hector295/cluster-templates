@@ -9,7 +9,7 @@ metadata:
   name: {{ .Values.cluster.name }}-control-plane
   namespace: fleet-default
 spec:
-  version: {{ .Values.cluster.kubernetesVersion }}
+  version: v1.33.0+rke2r1
   replicas: {{ $replicas }}
 {{/*  manifestsConfigMapReference:*/}}
 {{/*    name: kube-vip-static-pod-{{ .Values.cluster.name }}*/}}
