@@ -68,14 +68,22 @@ spec:
         - name: query
           value:
             type: String
-            string: "[\"=\", \"$hypervisor_hostname\", \"{{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}\"]"
+            string: "[\"=\",\"$hypervisor_hostname\",\"{{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}\"]"
       {{- end }}
-      {{- if or (and (hasKey $.Values.workerNodes.defaults "rootVolume") (ne $.Values.workerNodes.defaults.rootVolume.sizeGiB "" )) (and (hasKey $worker "rootVolume") (ne $worker.rootVolume.sizeGiB "" )) }}
+      {{- $rootVolumeSize := dig "rootVolume" "sizeGiB" "" $worker | default (dig "rootVolume" "sizeGiB" "" $.Values.workerNodes.defaults) }}
+      {{- if $rootVolumeSize }}
+        {{- $sizeInt := int $rootVolumeSize }}
+        {{- if lt $sizeInt 1 }}
+          {{- fail "rootVolume.sizeGiB must be positive" }}
+        {{- end }}
+
       rootVolume:
-        sizeGiB: {{ $worker.rootVolume.sizeGiB | default $.Values.workerNodes.defaults.rootVolume.sizeGiB }}
-        {{- if or (and (hasKey $.Values.workerNodes.defaults "availabilityZone") (ne $.Values.workerNodes.defaults.rootVolume.availabilityZone "" )) (and (hasKey $worker "availabilityZone") (ne $worker.rootVolume.availabilityZone "" )) }}
+        sizeGiB: {{ $sizeInt }}
+
+        {{- $az := dig "rootVolume" "availabilityZone" "" $worker | default (dig "rootVolume" "availabilityZone" "" $.Values.workerNodes.defaults) }}
+        {{- if $az }}
         availabilityZone:
-          name:  {{ $worker.rootVolume.availabilityZone | default $.Values.controlPlaneNodes.rootVolume.availabilityZone }}
+          name: {{ $az }}
         {{- end }}
       {{- end }}
 {{/*      # Grupo de servidores para colocación - opcional*/}}

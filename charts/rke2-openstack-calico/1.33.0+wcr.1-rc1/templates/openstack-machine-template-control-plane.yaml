@@ -62,13 +62,19 @@ spec:
             string: "[\"=\", \"$hypervisor_hostname\", \"{{ .Values.controlPlaneNodes.hypervisorHostname }}\"]"
       {{- end }}
 
-      {{- if and (hasKey .Values.controlPlaneNodes "rootVolume") (ne .Values.controlPlaneNodes.rootVolume.sizeGiB "" ) }}
+      {{- $rootVolume := .Values.controlPlaneNodes.rootVolume }}
+      {{- if and $rootVolume $rootVolume.sizeGiB }}
+        {{- $sizeInt := int $rootVolume.sizeGiB }}
+        {{- if lt $sizeInt 1 }}
+          {{- fail "controlPlaneNodes.rootVolume.sizeGiB must be positive" }}
+        {{- end }}
+
       rootVolume:
         # Tamaño del volumen en GiB
-        sizeGiB: {{ .Values.controlPlaneNodes.rootVolume.sizeGiB }}
-        {{- if and (hasKey .Values.controlPlaneNodes.rootVolume "availabilityZone") (ne .Values.controlPlaneNodes.rootVolume.availabilityZone "") }}
+        sizeGiB: {{ $sizeInt }}
+        {{- if $rootVolume.availabilityZone }}
         availabilityZone:
-          name: {{ .Values.controlPlaneNodes.rootVolume.availabilityZone }}
+          name: {{ $rootVolume.availabilityZone }}
         {{- end }}
       {{- end }}
 
