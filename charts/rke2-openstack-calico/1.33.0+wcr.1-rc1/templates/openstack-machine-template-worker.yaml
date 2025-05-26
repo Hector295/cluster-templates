@@ -69,10 +69,10 @@ spec:
       configDrive: true
       {{- if or (ne $.Values.workerNodes.defaults.hypervisorHostname "") (and (hasKey $worker "hypervisorHostname") (ne $worker.hypervisorHostname "")) }}
       schedulerHintAdditionalProperties:
-        - name: "force_hosts"
+        - name: "query"
           value:
             type: "String"
-            string: {{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}
+            string: "[\"=\", \"$hypervisor_hostname\", \"{{ $worker.hypervisorHostname | default $.Values.controlPlaneNodes.hypervisorHostname }}\"]"
       {{- end }}
       {{- $rootVolumeSize := dig "rootVolume" "sizeGiB" "" $worker | default (dig "rootVolume" "sizeGiB" "" $.Values.workerNodes.defaults) }}
       {{- if $rootVolumeSize }}

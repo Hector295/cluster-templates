@@ -56,10 +56,10 @@ spec:
       configDrive: true
       {{- if ne .Values.controlPlaneNodes.hypervisorHostname "" }}
       schedulerHintAdditionalProperties:
-        - name: "force_hosts"
+        - name: "query"
           value:
             type: "String"
-            string: {{ .Values.controlPlaneNodes.hypervisorHostname }}
+            string: "[\"=\", \"$hypervisor_hostname\", \"{{ .Values.controlPlaneNodes.hypervisorHostname }}\"]"
       {{- end }}
 
       {{- $rootVolume := .Values.controlPlaneNodes.rootVolume }}
