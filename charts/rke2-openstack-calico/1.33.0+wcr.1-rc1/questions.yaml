@@ -313,7 +313,6 @@ questions:
     description: "Identificador único del cluster de Ceph"
     type: "string"
     required: true
-    default: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
     group: "Storage"
     if: "storage.ceph.enabled"
 
@@ -493,6 +492,137 @@ questions:
     group: "Services"
     if: "kubevirt.enabled"
 
+  # ===============
+  # SR-IOV Operator
+  # ===============
+  - variable: "sriovOperator.enabled"
+    label: "Habilitar SR-IOV Operator"
+    description: "Habilitar el operador SR-IOV para redes de alto rendimiento"
+    type: "boolean"
+    default: true
+    group: "Services"
+
+  - variable: "sriovOperator.customValues"
+    label: "Valores Personalizados SR-IOV Operator"
+    description: "Configuración YAML personalizada para SR-IOV Operator"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "sriovOperator.enabled"
+
+  # ===============
+  # Node Config Operator
+  # ===============
+  - variable: "nodeConfigOperator.enabled"
+    label: "Habilitar Node Config Operator"
+    description: "Habilitar el operador de configuración de nodos"
+    type: "boolean"
+    default: true
+    group: "Services"
+
+  - variable: "nodeConfigOperator.managerConfig.aptEnabled"
+    label: "Habilitar APT en Node Config"
+    description: "Habilitar gestión de paquetes APT en los nodos"
+    type: "boolean"
+    default: true
+    group: "Services"
+    if: "nodeConfigOperator.enabled"
+
+  - variable: "nodeConfigOperator.managerConfig.hostfsEnabled"
+    label: "Habilitar HostFS en Node Config"
+    description: "Habilitar acceso al sistema de archivos del host"
+    type: "boolean"
+    default: true
+    group: "Services"
+    if: "nodeConfigOperator.enabled"
+
+  - variable: "nodeConfigOperator.customValues"
+    label: "Valores Personalizados Node Config Operator"
+    description: "Configuración YAML personalizada para Node Config Operator"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "nodeConfigOperator.enabled"
+
+  # ===============
+  # NMState Operator
+  # ===============
+  - variable: "nmstateOperator.enabled"
+    label: "Habilitar NMState Operator"
+    description: "Habilitar el operador NMState para configuración de red declarativa"
+    type: "boolean"
+    default: false
+    group: "Services"
+
+  - variable: "nmstateOperator.customValues"
+    label: "Valores Personalizados NMState Operator"
+    description: "Configuración YAML personalizada para NMState Operator"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "nmstateOperator.enabled"
+
+  # ===============
+  # SDN Controller
+  # ===============
+  - variable: "sdnController.enabled"
+    label: "Habilitar SDN Controller"
+    description: "Habilitar el controlador de red definida por software"
+    type: "boolean"
+    default: true
+    group: "Services"
+
+  - variable: "sdnController.whitesdnSecrets.password"
+    label: "Contraseña WhiteSDN"
+    description: "Contraseña para los secrets de WhiteSDN"
+    type: "password"
+    default: "kcatsetiw"
+    group: "Services"
+    if: "sdnController.enabled"
+
+  - variable: "sdnController.customValues"
+    label: "Valores Personalizados SDN Controller"
+    description: "Configuración YAML personalizada para SDN Controller"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "sdnController.enabled"
+
+  # ===============
+  # NTP Service
+  # ===============
+  - variable: "ntp.enabled"
+    label: "Habilitar NTP"
+    description: "Habilitar servicio de sincronización de tiempo NTP"
+    type: "boolean"
+    default: true
+    group: "Services"
+
+  - variable: "ntp.customValues"
+    label: "Valores Personalizados NTP"
+    description: "Configuración YAML personalizada para NTP"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "ntp.enabled"
+
+  # ===============
+  # X509 Certificate Exporter
+  # ===============
+  - variable: "x509CertExporter.enabled"
+    label: "Habilitar X509 Certificate Exporter"
+    description: "Habilitar exportador de métricas de certificados X509"
+    type: "boolean"
+    default: true
+    group: "Services"
+
+  - variable: "x509CertExporter.customValues"
+    label: "Valores Personalizados X509 Cert Exporter"
+    description: "Configuración YAML personalizada para X509 Certificate Exporter"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "x509CertExporter.enabled"
 
   - variable: "registries.enabled"
     label: "Habilitar Registries Personalizados"
