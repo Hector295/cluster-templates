@@ -319,13 +319,9 @@ questions:
 
   - variable: "storage.ceph.monitorList"
     label: "Lista de Monitores Ceph"
-    description: "Lista de direcciones IP:puerto de los monitores Ceph (formato YAML array)"
-    type: "yaml"
-    default: |
-      []  
-      # Ejemplo:  
-      # - "1.2.3.4:6789"  
-      # - "1.2.3.5:6789"
+    description: "Lista de direcciones IP:puerto de los monitores Ceph (ej: 1.2.3.4:6789)"
+    type: "array"
+    default: []
     group: "Storage"
     if: "storage.ceph.enabled"
 
