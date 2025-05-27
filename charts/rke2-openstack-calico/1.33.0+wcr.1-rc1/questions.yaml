@@ -1,0 +1,530 @@
+questions:
+  # ===============
+  # Configuración del Cluster
+  # ===============
+  - variable: "cluster.apiServerVIP"
+    label: "API Server VIP"
+    description: "Dirección IP virtual del API server"
+    type: "ipaddr"
+    required: true
+    default: "10.101.15.245"
+    group: "Cluster"
+
+  - variable: "cluster.name"
+    label: "Nombre del Cluster"
+    description: "Nombre del cluster de Kubernetes"
+    type: "string"
+    required: true
+    default: "prod-cluster"
+    group: "Cluster"
+
+  - variable: "cluster.etcd.exposeMetrics"
+    label: "Exponer Métricas ETCD"
+    description: "Define la política para la exposición de métricas ETCD"
+    type: "boolean"
+    default: false
+    group: "Cluster"
+
+  - variable: "cluster.etcd.backup.disableAutomaticSnapshots"
+    label: "Deshabilitar Snapshots Automáticos"
+    description: "Deshabilitar los snapshots automáticos de ETCD"
+    type: "boolean"
+    default: true
+    group: "Cluster"
+
+  # ===============
+  # Configuración OpenStack
+  # ===============
+  - variable: "infraConfig.authUrl"
+    label: "URL de Autenticación OpenStack"
+    description: "URL del servicio de autenticación de OpenStack"
+    type: "string"
+    required: true
+    default: "https://whitecloud.intra.whitestack.com:5000/v3"
+    group: "OpenStack"
+
+  - variable: "infraConfig.domainName"
+    label: "Nombre del Dominio"
+    description: "Nombre del dominio en OpenStack"
+    type: "string"
+    required: true
+    default: "Default"
+    group: "OpenStack"
+
+  - variable: "infraConfig.keypairName"
+    label: "Nombre del Key Pair"
+    description: "Nombre del key pair para acceso SSH"
+    type: "string"
+    required: true
+    default: "Hector"
+    group: "OpenStack"
+
+  - variable: "infraConfig.region"
+    label: "Región"
+    description: "Región de OpenStack"
+    type: "string"
+    required: true
+    default: "RegionOne"
+    group: "OpenStack"
+
+  - variable: "infraConfig.sshUser"
+    label: "Usuario SSH"
+    description: "Usuario para conexiones SSH"
+    type: "string"
+    required: true
+    default: "ubuntu"
+    group: "OpenStack"
+
+  - variable: "infraConfig.tenantName"
+    label: "Nombre del Tenant"
+    description: "Nombre del tenant/proyecto en OpenStack"
+    type: "string"
+    required: true
+    default: "team-products"
+    group: "OpenStack"
+
+  - variable: "infraConfig.username"
+    label: "Usuario OpenStack"
+    description: "Nombre de usuario para OpenStack"
+    type: "string"
+    required: true
+    default: "hventura"
+    group: "OpenStack"
+
+  - variable: "infraConfig.principalNetwork.netName"
+    label: "Red Principal"
+    description: "Nombre de la red principal"
+    type: "string"
+    required: true
+    default: "intra-net-products"
+    group: "OpenStack"
+
+  - variable: "infraConfig.principalNetwork.subnetName"
+    label: "Subred Principal"
+    description: "Nombre de la subred principal"
+    type: "string"
+    required: true
+    default: "net-products"
+    group: "OpenStack"
+
+  - variable: "infraConfig.password.secret.name"
+    label: "Nombre del Secret de Contraseña"
+    description: "Nombre del secret que contiene la contraseña de OpenStack"
+    type: "secret"
+    required: true
+    default: "passopenstack"
+    group: "OpenStack"
+
+  # ===============
+  # Nodos Control Plane
+  # ===============
+  - variable: "controlPlaneNodes.quantity"
+    label: "Cantidad de Nodos Control Plane"
+    description: "Número de nodos control plane"
+    type: "int"
+    required: true
+    default: 1
+    min: 1
+    max: 5
+    group: "Control Plane"
+
+  - variable: "controlPlaneNodes.flavorName"
+    label: "Flavor de Control Plane"
+    description: "Tipo de instancia para nodos control plane"
+    type: "enum"
+    required: true
+    default: "m1.large"
+    options:
+      - "m1.small"
+      - "m1.medium"
+      - "m1.large"
+      - "m1.xlarge"
+    group: "Control Plane"
+
+  - variable: "controlPlaneNodes.imageName"
+    label: "Imagen del SO"
+    description: "Imagen del sistema operativo"
+    type: "string"
+    required: true
+    default: "Ubuntu 22.04 LTS"
+    group: "Control Plane"
+
+  - variable: "controlPlaneNodes.rootVolume.sizeGiB"
+    label: "Tamaño del Volumen Root (GiB)"
+    description: "Tamaño del volumen root en GiB"
+    type: "string"
+    required: true
+    default: "40"
+    group: "Control Plane"
+
+  - variable: "controlPlaneNodes.hypervisorHostname"
+    label: "Hostname del Hipervisor"
+    description: "Hostname específico del hipervisor"
+    type: "hostname"
+    required: true
+    default: "hal1"
+    group: "Control Plane"
+
+  # ===============
+  # Nodos Worker
+  # ===============
+  - variable: "workerNodes.defaults.quantity"
+    label: "Cantidad de Nodos Worker"
+    description: "Número de nodos worker por defecto"
+    type: "int"
+    required: true
+    default: 2
+    min: 1
+    max: 20
+    group: "Worker Nodes"
+
+  - variable: "workerNodes.defaults.flavorName"
+    label: "Flavor de Worker por Defecto"
+    description: "Tipo de instancia para nodos worker"
+    type: "enum"
+    required: true
+    default: "m1.large"
+    options:
+      - "m1.small"
+      - "m1.medium"
+      - "m1.large"
+      - "m1.xlarge"
+    group: "Worker Nodes"
+
+  - variable: "workerNodes.defaults.rootVolume.sizeGiB"
+    label: "Tamaño del Volumen Root Worker (GiB)"
+    description: "Tamaño del volumen root para workers en GiB"
+    type: "string"
+    required: true
+    default: "50"
+    group: "Worker Nodes"
+
+  # ===============
+  # Configuración CNI
+  # ===============
+  - variable: "cniConfig.podCIDR"
+    label: "CIDR de Pods"
+    description: "Rango CIDR para pods"
+    type: "cidr"
+    required: true
+    default: "10.42.0.0/16"
+    group: "Networking"
+
+  - variable: "cniConfig.serviceCIDR"
+    label: "CIDR de Servicios"
+    description: "Rango CIDR para servicios"
+    type: "cidr"
+    required: true
+    default: "10.42.0.0/16"
+    group: "Networking"
+
+  - variable: "cniConfig.mtu"
+    label: "MTU"
+    description: "Maximum Transmission Unit"
+    type: "int"
+    required: true
+    default: 1440
+    min: 1200
+    max: 9000
+    group: "Networking"
+
+  - variable: "cniConfig.tunnelProtocol"
+    label: "Protocolo de Túnel"
+    description: "Protocolo para túneles de red"
+    type: "enum"
+    required: true
+    default: "VXLAN"
+    options:
+      - "VXLAN"
+      - "IPIP"
+      - "WireGuard"
+    group: "Networking"
+
+  - variable: "cniConfig.masquerade"
+    label: "Habilitar Masquerade"
+    description: "Habilitar masquerade para tráfico saliente"
+    type: "boolean"
+    default: true
+    group: "Networking"
+
+  - variable: "cniConfig.bgp"
+    label: "Habilitar BGP"
+    description: "Habilitar Border Gateway Protocol"
+    type: "boolean"
+    default: false
+    group: "Networking"
+
+  # ===============
+  # Almacenamiento
+  # ===============
+  - variable: "storage.longhorn.enabled"
+    label: "Habilitar Longhorn"
+    description: "Habilitar almacenamiento distribuido Longhorn"
+    type: "boolean"
+    default: false
+    group: "Storage"
+  - variable: "storage.longhorn.customValues"
+    label: "Valores Personalizados Longhorn"
+    description: "Configuración YAML personalizada para Longhorn"
+    type: "yaml"
+    default: "{}"
+    group: "Storage"
+    if: "storage.longhorn.enabled"
+
+  - variable: "storage.openebs.enabled"
+    label: "Habilitar OpenEBS"
+    description: "Habilitar almacenamiento OpenEBS"
+    type: "boolean"
+    default: true
+    group: "Storage"
+  - variable: "storage.openebs.customValues"
+    label: "Valores Personalizados OpenEBS"
+    description: "Configuración YAML personalizada para OpenEBS"
+    type: "yaml"
+    default: "{}"
+    group: "Storage"
+    if: "storage.openebs.enabled"
+
+  - variable: "storage.cinder.enabled"
+    label: "Habilitar Cinder"
+    description: "Habilitar almacenamiento OpenStack Cinder"
+    type: "boolean"
+    default: false
+    group: "Storage"
+  - variable: "storage.cinder.customValues"
+    label: "Valores Personalizados Cinder"
+    description: "Configuración YAML personalizada para OpenStack Cinder"
+    type: "yaml"
+    default: "{}"
+    group: "Storage"
+    if: "storage.cinder.enabled"
+
+  - variable: "storage.ceph.enabled"
+    label: "Habilitar Ceph"
+    description: "Habilitar almacenamiento Ceph"
+    type: "boolean"
+    default: false
+    group: "Storage"
+  # ===============
+  # Ceph Storage Configuration
+  # ===============
+  - variable: "storage.ceph.clusterID"
+    label: "Cluster ID de Ceph"
+    description: "Identificador único del cluster de Ceph"
+    type: "string"
+    required: true
+    default: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.monitorList"
+    label: "Lista de Monitores Ceph"
+    description: "Lista de direcciones IP:puerto de los monitores Ceph (formato YAML array)"
+    type: "yaml"
+    default: |
+      []  
+      # Ejemplo:  
+      # - "1.2.3.4:6789"  
+      # - "1.2.3.5:6789"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.pool"
+    label: "Pool de Ceph"
+    description: "Nombre del pool de almacenamiento en Ceph"
+    type: "string"
+    required: true
+    default: "volumes"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.userID"
+    label: "Usuario ID de Ceph"
+    description: "ID del usuario para autenticación en Ceph"
+    type: "string"
+    required: true
+    default: "admin"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.userKey"
+    label: "Clave de Usuario Ceph"
+    description: "Clave de autenticación del usuario Ceph"
+    type: "password"
+    required: true
+    default: "AAAAAAAAAAAAAAAAAA/BBBBBBBBBBBBBBBBBBB=="
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.provisionerReplicaCount"
+    label: "Réplicas del Provisioner"
+    description: "Número de réplicas del provisioner de Ceph"
+    type: "int"
+    required: true
+    default: 3
+    min: 1
+    max: 10
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.reclaimPolicy"
+    label: "Política de Reclamación"
+    description: "Política de reclamación para volúmenes persistentes"
+    type: "enum"
+    required: true
+    default: "Retain"
+    options:
+      - "Retain"
+      - "Delete"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.enabledHostNetwork"
+    label: "Habilitar Host Network"
+    description: "Habilitar el uso de la red del host para Ceph"
+    type: "boolean"
+    default: false
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  # ===============
+  # Ceph CSI RBD Configuration
+  # ===============
+  - variable: "storage.ceph.csiRBD.enabled"
+    label: "Habilitar CSI RBD"
+    description: "Habilitar el driver CSI para Ceph RBD (Block Device)"
+    type: "boolean"
+    default: false
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  # ===============
+  # Ceph CSI FS Configuration
+  # ===============
+  - variable: "storage.ceph.csiFS.enabled"
+    label: "Habilitar CSI FS"
+    description: "Habilitar el driver CSI para CephFS (File System)"
+    type: "boolean"
+    default: false
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  - variable: "storage.ceph.csiFS.fsName"
+    label: "Nombre del File System"
+    description: "Nombre del file system de CephFS"
+    type: "string"
+    default: ""
+    group: "Storage"
+    if: "storage.ceph.enabled && storage.ceph.csiFS.enabled"
+  - variable: "storage.ceph.customValues"
+    label: "Valores Personalizados Ceph"
+    description: "Configuración YAML personalizada para Ceph"
+    type: "yaml"
+    default: "{}"
+    group: "Storage"
+    if: "storage.ceph.enabled"
+
+  # ===============
+  # Servicios Adicionales
+  # ===============
+  - variable: "logging.enabled"
+    label: "Habilitar Logging"
+    description: "Habilitar sistema de logging"
+    type: "boolean"
+    default: true
+    group: "Services"
+  - variable: "logging.customValues"
+    label: "Valores Personalizados Logging"
+    description: "Configuración YAML personalizada para el sistema de logging"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "logging.enabled"
+
+  - variable: "metallb.enabled"
+    label: "Habilitar MetalLB"
+    description: "Habilitar load balancer MetalLB"
+    type: "boolean"
+    default: true
+    group: "Services"
+  - variable: "metallb.customValues"
+    label: "Valores Personalizados MetalLB"
+    description: "Configuración YAML personalizada para MetalLB"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "metallb.enabled"
+
+  - variable: "monitoring.enabled"
+    label: "Habilitar Monitoring"
+    description: "Habilitar sistema de monitoreo"
+    type: "boolean"
+    default: false
+    group: "Services"
+  - variable: "monitoring.customValues"
+    label: "Valores Personalizados Monitoring"
+    description: "Configuración YAML personalizada para el sistema de monitoreo"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "monitoring.enabled"
+
+  - variable: "ingressNginx.enabled"
+    label: "Habilitar Ingress NGINX"
+    description: "Habilitar controlador de ingress NGINX"
+    type: "boolean"
+    default: true
+    group: "Services"
+  - variable: "ingressNginx.customValues"
+    label: "Valores Personalizados Ingress NGINX"
+    description: "Configuración YAML personalizada para Ingress NGINX"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "ingressNginx.enabled"
+
+  - variable: "kubevirt.enabled"
+    label: "Habilitar KubeVirt"
+    description: "Habilitar virtualización KubeVirt"
+    type: "boolean"
+    default: true
+    group: "Services"
+  - variable: "kubevirt.customValues"
+    label: "Valores Personalizados KubeVirt"
+    description: "Configuración YAML personalizada para KubeVirt"
+    type: "yaml"
+    default: "{}"
+    group: "Services"
+    if: "kubevirt.enabled"
+
+
+  - variable: "registries.enabled"
+    label: "Habilitar Registries Personalizados"
+    description: "Habilitar configuración de registries personalizados"
+    type: "boolean"
+    default: false
+    group: "Services"
+
+  # ===============
+  # Configuración Avanzada
+  # ===============
+  - variable: "cluster.etcd.extraArgs"
+    label: "Argumentos Extra de ETCD"
+    description: "Argumentos adicionales para ETCD (formato YAML)"
+    type: "yaml"
+    default: "[]"
+    group: "Advanced"
+
+  - variable: "cluster.kubeComponents.kubeApiServer.extraArgs"
+    label: "Argumentos Extra del API Server"
+    description: "Argumentos adicionales para kube-apiserver (formato YAML)"
+    type: "yaml"
+    default: "[]"
+    group: "Advanced"
+
+  - variable: "cniConfig.additionalConfig"
+    label: "Configuración Adicional CNI"
+    description: "Configuración adicional para CNI (formato YAML)"
+    type: "yaml"
+    default: "{}"
+    group: "Advanced"
