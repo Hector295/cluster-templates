@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-kubevirt-cdi-helm
 spec:
+  version: "0.5.0"
   chartName: cdi
   clusterSelector:
     matchLabels:
@@ -27,6 +28,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-kubevirt-helm
 spec:
+  version: "0.5.0"
   chartName: kubevirt
   clusterSelector:
     matchLabels:

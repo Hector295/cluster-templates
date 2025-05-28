@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-metallb-helm
 spec:
+  version: "0.14.5"
   chartName: metallb
   clusterSelector:
     matchLabels:

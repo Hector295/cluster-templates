@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-cert-manager-helm
 spec:
+  version: "v1.17.1"
   chartName: cert-manager
   clusterSelector:
     matchLabels:
@@ -27,6 +28,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-nco-helm
 spec:
+  version: "0.2.0"
   chartName: node-config-operator
   clusterSelector:
     matchLabels:

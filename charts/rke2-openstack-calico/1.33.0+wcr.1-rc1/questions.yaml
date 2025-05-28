@@ -545,24 +545,6 @@ questions:
     if: "nodeConfigOperator.enabled"
 
   # ===============
-  # NMState Operator
-  # ===============
-  - variable: "nmstateOperator.enabled"
-    label: "Habilitar NMState Operator"
-    description: "Habilitar el operador NMState para configuración de red declarativa"
-    type: "boolean"
-    default: false
-    group: "Services"
-
-  - variable: "nmstateOperator.customValues"
-    label: "Valores Personalizados NMState Operator"
-    description: "Configuración YAML personalizada para NMState Operator"
-    type: "yaml"
-    default: "{}"
-    group: "Services"
-    if: "nmstateOperator.enabled"
-
-  # ===============
   # SDN Controller
   # ===============
   - variable: "sdnController.enabled"

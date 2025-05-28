@@ -3,6 +3,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-openstack-ccm-helm
 spec:
+  version: "2.32.0"
   chartName: openstack-cloud-controller-manager
   clusterSelector:
     matchLabels:
@@ -14,7 +15,12 @@ spec:
     wait: true
     waitForJobs: true
   namespace: kube-system
-  repoURL: https://kubernetes.github.io/cloud-provider-openstack
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
   valuesTemplate: |
     enabledControllers:
     - cloud-node

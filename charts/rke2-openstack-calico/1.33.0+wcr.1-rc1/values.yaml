@@ -138,7 +138,7 @@ storage:
   cinder:
     enabled: false
     customValues: {}
-  ceph:
+  cephFS:
     enabled: false
     clusterID: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
     monitorList: [ ]
@@ -151,11 +151,21 @@ storage:
     provisionerReplicaCount: 3
     reclaimPolicy: "Retain"
     enabledHostNetwork: false
-    csiRBD:
-      enabled: false
-    csiFS:
-      enabled: false
-      fsName: ""
+    fsName: ""
+    customValues: {}
+  cephRBD:
+    enabled: false
+    clusterID: "aaaaaaaa-bbbb-1111-2222-33333ccccccc"
+    monitorList: [ ]
+    # monitorList:
+    #  - "1.2.3.4:6789"
+    #  - "1.2.3.5:6789"
+    pool: "volumes"
+    userID: "admin"
+    userKey: "AAAAAAAAAAAAAAAAAA/BBBBBBBBBBBBBBBBBBB=="
+    provisionerReplicaCount: 3
+    reclaimPolicy: "Retain"
+    enabledHostNetwork: false
     customValues: {}
 logging:
   enabled: true
@@ -193,8 +203,6 @@ nodeConfigOperator:
     aptEnabled: true
     hostfsEnabled: true
   customValues:  {}
-nmstateOperator:
-  enabled: false
 #  customValues: {}
 sdnController:
   enabled: true

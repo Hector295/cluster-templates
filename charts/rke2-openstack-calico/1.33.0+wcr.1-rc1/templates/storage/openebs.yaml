@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-openebs-helm
 spec:
+  version: "3.10.0"
   chartName: openebs
   clusterSelector:
     matchLabels:

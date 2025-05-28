@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-ntp-helm
 spec:
+  version: "1.1.2"
   chartName: ntpd-rs
   clusterSelector:
     matchLabels:

@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-x509-certificate-exporter-helm
 spec:
+  version: "3.18.1"
   chartName: x509-certificate-exporter
   clusterSelector:
     matchLabels:

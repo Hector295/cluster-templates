@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-sriov-crd-helm
 spec:
+  version: "1.5.2-up1.5.0"
   chartName: sriov-crd
   clusterSelector:
     matchLabels:
@@ -27,6 +28,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-sriov-operator-helm
 spec:
+  version: "1.5.2-up1.5.0"
   chartName: sriov-network-operator
   clusterSelector:
     matchLabels:

@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-loggin-crd-helm
 spec:
+  version: "106.0.1-up4.10.0-rancher.4"
   chartName: rancher-logging-crd
   clusterSelector:
     matchLabels:
@@ -27,6 +28,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-loggin-helm
 spec:
+  version: "106.0.1-up4.10.0-rancher.4"
   chartName: rancher-logging
   clusterSelector:
     matchLabels:

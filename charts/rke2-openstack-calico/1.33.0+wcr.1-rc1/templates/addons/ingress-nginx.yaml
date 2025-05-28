@@ -4,6 +4,7 @@ kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-ingress-nginx-helm
 spec:
+  version: "4.12.103"
   chartName: rke2-ingress-nginx
   clusterSelector:
     matchLabels:

@@ -5,6 +5,7 @@ metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-longhorn-helm
 spec:
   chartName: openstack-cinder-csi
+  version: 2.1.1
   clusterSelector:
     matchLabels:
     {{- include "rke2-openstack-calico.labels" . | nindent 6 }}

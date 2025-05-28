@@ -1,9 +1,35 @@
 {{ if .Values.storage.longhorn.enabled }}
+---
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: {{ include "rke2-openstack-calico.name" . }}-longhorn-crd-helm
+spec:
+  version: "106.2.0-up1.8.1"
+  chartName: longhorn-crd
+  clusterSelector:
+    matchLabels:
+    {{- include "rke2-openstack-calico.labels" . | nindent 6 }}
+  options:
+    install:
+      createNamespace: true
+    timeout: 5m
+    wait: true
+    waitForJobs: true
+  namespace: longhorn-system
+  repoURL: oci://us-central1-docker.pkg.dev/whitestack/whitecruiser/marketplace
+  credentials:
+    key: config.json
+    secret:
+      name: oci-whitecruiser-marketplace
+      namespace: fleet-default
+---
 apiVersion: addons.cluster.x-k8s.io/v1alpha1
 kind: HelmChartProxy
 metadata:
   name: {{ include "rke2-openstack-calico.name" . }}-longhorn-helm
 spec:
+  version: "106.2.0-up1.8.1"
   chartName: longhorn
   clusterSelector:
     matchLabels:
